@@ -1,24 +1,23 @@
+# DEMO Codes
+
+## Single Calculator Test
+
+```python
+# Test Window
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import sys
 from PySide2.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel
 from PySide2.QtCore import Qt, QSize, QMargins
 
-sys.path.append("../EECalculator")
+sys.path.append('../EECalculator')
 from EECalculator.HomePage import config
 
-# Claculator Class
+
+# Define Your Calculator
 class MainWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        self.MainLayout = QVBoxLayout(self)
-        self.InitUI()
-
-    def InitUI(self):
-        self.Title = QLabel("EE Claculator\n A set of Calculators for EE")
-        self.Title.setAlignment(Qt.AlignCenter)
-        self.Title.setFont(config.MenuFont())
-        self.MainLayout.addWidget(self.Title)
 
 
 # Test Window
@@ -43,3 +42,4 @@ if __name__ == "__main__":
     window = Calculator()
     window.show()
     sys.exit(app.exec_())
+```

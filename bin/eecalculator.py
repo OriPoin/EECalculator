@@ -14,41 +14,38 @@ from PySide2.QtWidgets import (
 )
 import os
 import sys
+from functools import partial
 
 sys.path.append("../EECalculator")
 from EECalculator.HomePage import homepage, config
+from EECalculator.RCFilter import rc
+from EECalculator.TcOfCap import tcap
+from EECalculator.NE555 import ne555
 
-
-def CleanWidgets(Parent):
-    while Parent.count():
-        Child = Parent.takeAt(0)
-        if Child.widget():
-            Child.widget().deleteLater()
-
-
-def GetMenuList(Path, MenuListLayout, Width, Height):
-    ModuleWidget = []
-    ModuleList = []
-    i = 0
-    for module in os.listdir(Path):
-        if os.path.isdir(os.path.join(Path, module)) and module != "__pycache__":
-            ModuleList.append(module)
-            ModuleWidget.append(QPushButton(module))
-            ModuleWidget[i].setFixedWidth(Width)
-            ModuleWidget[i].setFixedHeight(Height)
-            MenuListLayout.addWidget(ModuleWidget[i])
-            i += 1
-    MenuListLayout.addStretch(1)
-
+modules = ['Home','RC Filter','Capacitor discharge','NE555']
 
 class EECalculator(QMainWindow):
     def __init__(self, parent):
         QMainWindow.__init__(self)
         # TODO:use framelesswindow
         # self.setWindowFlags(Qt.FramelessWindowHint)
-        self.PackagePath = "EECalculator"
         self.InitUI()
 
+    def RefreshWidgets(self,target,name):
+        while target.count():
+            Child = target.takeAt(0)
+            if Child.widget():
+                Child.widget().deleteLater()
+        if name==modules[0]:
+            target.addWidget(homepage.MainWidget())
+        if name==modules[1]:
+            target.addWidget(rc.MainWidget())
+        if name==modules[2]:
+            target.addWidget(tcap.MainWidget())
+        if name==modules[3]:
+            target.addWidget(ne555.MainWidget())
+            
+        
     def InitUI(self):
         # Set Window Size
         self.resize(800, 600)
@@ -67,6 +64,17 @@ class EECalculator(QMainWindow):
         self.MenuScrollAreaContents = QWidget()
         self.MenuScrollAreaLayout = QVBoxLayout(self.MenuScrollAreaContents)
 
+        ButtonList=[]
+        i = 0
+        for module in modules:
+            ButtonList.append(QPushButton(module))
+            ButtonList[i].setFixedWidth(198)
+            ButtonList[i].setFixedHeight(66)
+            ButtonList[i].clicked.connect(partial(self.RefreshWidgets,self.DisplayLayout,module))
+            self.MenuScrollAreaLayout.addWidget(ButtonList[i])
+            i += 1
+        self.MenuScrollAreaLayout.addStretch(1)
+
         # Setup Widget&LAyout
         self.MenuScrollArea.setFixedWidth(200)
         self.MenuScrollAreaLayout.setMargin(0)
@@ -75,12 +83,10 @@ class EECalculator(QMainWindow):
         self.MainLayout.setMargin(0)
         self.MenuScrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.MenuScrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        GetMenuList(self.PackagePath, self.MenuScrollAreaLayout, 198, 66)
         self.MenuScrollArea.setWidget(self.MenuScrollAreaContents)
 
-        self.DisplayWidget = homepage.MainWidget()
+        self.DisplayLayout.addWidget(homepage.MainWidget())
 
-        self.MainLayout.addWidget(self.DisplayWidget)
         self.MainLayout.addWidget(self.MenuScrollArea)
         self.MainLayout.addWidget(self.DisplayWidget)
         self.setCentralWidget(self.MainWidget)
@@ -90,6 +96,7 @@ class CalculatorAPP(QApplication):
     def __init__(self, arg__1):
         super().__init__(arg__1)
         self.setStyle("Fusion")
+        # self.setStyle('Windows')
         self.Window = EECalculator(self)
         self.Window.show()
 
