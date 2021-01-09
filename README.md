@@ -50,4 +50,4 @@ git clone https://github.com/OriPoin/EECalculator.git
 
 &emsp;&emsp;If you are interested in this project, please mail to [OriPoin@outlook.com](mailto:OriPoin@outlook.com), or fork our repository, create the calculator you want according to our documents, and pull request.
 
-&emsp;&emsp;另外我们有中文文档
+&emsp;&emsp;另外我们有[中文文档](https://github.com/OriPoin/EECalculator/blob/master/doc/README_zh.md)
